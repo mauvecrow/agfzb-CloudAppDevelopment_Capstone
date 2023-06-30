@@ -93,7 +93,7 @@ def get_dealer_details(request, dealer_id):
     if request.method == 'GET':
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/44afbc3a-4d46-45dc-99c8-72d987e67f82/dealership-package/get-review"
         dealer_reviews = get_dealer_reviews_from_cf(url, dealer_id)
-        reviews = ', '.join([rev.review for rev in dealer_reviews])
+        reviews = '; '.join([', '.join("%s: %s" % item for item in vars(rev).items()) for rev in dealer_reviews])
         return HttpResponse(reviews)
 
 
