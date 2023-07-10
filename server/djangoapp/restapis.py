@@ -82,9 +82,14 @@ def get_dealer_reviews_from_cf(url, dealerId):
                 print("watson failed")
 
             review_id = review['id'] if 'id' in review else "-1"
-            rev_obj = DealerReview(review['dealership'], review['name'], review['purchase'],
-            review['review'], review['purchase_date'], review['car_make'], 
-            review['car_model'], review['car_year'], watson, review_id)
+            purchase_date = review['purchase_date'] if 'purchase_date' in review else None
+            car_make = review['car_make'] if 'car_make' in review else None
+            car_model = review['car_model'] if 'car_model' in review else None
+            car_year = review['car_year'] if 'car_year' in review else None 
+            purchase = review['purchase'] if 'purchase' in review else False
+            rev_obj = DealerReview(review['dealership'], review['name'], purchase,
+            review['review'], purchase_date, car_make, 
+            car_model, car_year, watson, review_id)
             results.append(rev_obj)
     return results
 
