@@ -120,7 +120,7 @@ def add_review(request, dealer_id):
             return render(request, 'djangoapp/registration.html', context)
         print("User is authenticated")
         content = request.POST['content']
-        purchase = request.POST['purchasecheck']
+        purchase = request.POST['purchasecheck'] if 'purchasecheck' in request.POST else False
         purchase_date = request.POST['purchasedate']
         car_id = request.POST['car']
         car = CarModel.objects.get(pk=car_id)
@@ -129,7 +129,7 @@ def add_review(request, dealer_id):
         model = car.name
         year = car.year.strftime("%Y")
         review = {
-            # "id": "001",
+            "id": "701" + str(datetime.now().strftime("%m%d%y%H%M%S")),
             "name": "online review",
             "dealership": dealer_id,
             "review": content,
@@ -149,7 +149,11 @@ def add_review(request, dealer_id):
         cars = CarModel.objects.filter(dealer_id=dealer_id)
         context['cars'] = cars
         url2 = "https://us-south.functions.appdomain.cloud/api/v1/web/44afbc3a-4d46-45dc-99c8-72d987e67f82/dealership-package/get-dealership"
-        dealership = get_request(url2, id=dealer_id)['docs'][0]
+        dealer_result = get_request(url2, id=dealer_id)
+        delearship = {"full_name": "oops, something didn't load"}
+        if 'docs' in dealer_result:
+            if len(dealer_result['docs']) > 0:
+                dealership = dealer_result['docs'][0]
         context['dealership'] = dealership
         return render(request, 'djangoapp/add_review.html', context)
 
